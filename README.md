@@ -12,3 +12,4 @@ OUTPUT_FOLDER = r'E:\Netease\\'<br>
 ## Env:<br>
 python 3.6.4<br>
 Package "mutagen"<br>
+Tag source: https://api.imjad.cn
