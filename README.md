@@ -1,7 +1,9 @@
 # netease_mp3_download<br>
 ## Release date:<br>
 Aug 10 2018
-## Purpose:<br>
+## Purpose:
+Download netease mp3 files which can not directly be downloaded
+## Functions:<br>
 * Download netease mp3 from cache folder<br>
 * Add music tags "title, album, artist, date, tracknumber, cover" according tag source
 * Organize mp3 files structure
