@@ -5,10 +5,12 @@ import json
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, APIC
 from mutagen.mp3 import MP3
+import re
 
 
-CACHE_FOLDER = r'C:\Users\xxx\AppData\Local\Netease\CloudMusic\Cache\Cache\\'
+CACHE_FOLDER = r'C:\Users\reMArk\AppData\Local\Netease\CloudMusic\Cache\Cache\\'
 OUTPUT_FOLDER = r'E:\Netease\\'
+MAX_RETRY = 5
 INFO_API = r'https://api.imjad.cn/cloudmusic/?type=detail&id='
 
 
@@ -36,6 +38,13 @@ def get_tags(myinputfile):
     try:
         page = request.Request(info_url)
         page_html = request.urlopen(page).read().decode('utf-8')
+        retry_num = 1
+        while len(page_html) == 0:
+            if retry_num > MAX_RETRY:
+                exit(500)
+            time.sleep(1)
+            page_html = request.urlopen(page).read().decode('utf-8')
+            retry_num = retry_num + 1
         #print(page_html)
     except Exception as e:
         print(e)
@@ -102,19 +111,19 @@ def organize_file(myinputfile, mytags, myoutputfolder):
         exit(200)
     if not os.path.exists(myoutputfolder):
         exit(300)
-    artist_folder = myoutputfolder + mytags['artist_name']
+    artist_folder = myoutputfolder + re.sub('[\/:*?"<>|]', '', mytags['artist_name'])
     if not os.path.exists(artist_folder):
         os.mkdir(artist_folder)
-    album_folder = artist_folder + '\\' + mytags['album_year'] + '_' + mytags['album_name']
+    album_folder = artist_folder + '\\' + mytags['album_year'] + '_' + re.sub('[\/:*?"<>|]', '', mytags['album_name'])
     if not os.path.exists(album_folder):
         os.mkdir(album_folder)
-    audio_file = album_folder + '\\' + mytags['song_no'] + '.' + mytags['song_name'] + '.mp3'
+    audio_file = album_folder + '\\' + mytags['song_no'] + '.' + re.sub('[\/:*?"<>|]', '', mytags['song_name']) + '.mp3'
     print(audio_file)
     shutil.move(myinputfile, audio_file)
 
 
 def main():
-    print("----------------Started!----------------")
+    print("----------------Started at " + time.asctime(time.localtime(time.time())) + " !----------------")
     if not os.path.exists(CACHE_FOLDER):
         exit(100)
     if not os.path.exists(OUTPUT_FOLDER):
@@ -130,15 +139,8 @@ def main():
                 file_tags = get_tags(org_file)
                 write_tags(tran_file, file_tags)
                 organize_file(tran_file, file_tags, OUTPUT_FOLDER)
-    print("----------------Finished!----------------")
+    print("----------------Finished at " + time.asctime(time.localtime(time.time())) + " !----------------")
 
 
 if __name__ == '__main__':
-    #org_file = CACHE_FOLDER + '574923424-128-c26896bf13085f4c539e4f7a4544963a.uc'
-    #output_file = org_file + '.mp3'
-    #decrypt(org_file, output_file)
-    #write_tags(output_file, get_tags(org_file))
-    #organize_file(output_file, get_tags(org_file), OUTPUT_FOLDER)
-
-
     main()
