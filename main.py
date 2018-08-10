@@ -120,6 +120,7 @@ def organize_file(myinputfile, mytags, myoutputfolder):
     audio_file = album_folder + '\\' + mytags['song_no'] + '.' + re.sub('[\/:*?"<>|]', '', mytags['song_name']) + '.mp3'
     if os.path.exists(audio_file):
         print('--Skip ' + audio_file)
+        os.remove(myinputfile)
         return
     print(audio_file)
     shutil.move(myinputfile, audio_file)
