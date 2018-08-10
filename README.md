@@ -2,7 +2,9 @@
 ## Release date:<br>
 Aug 10 2018
 ## Purpose:<br>
-Download netease mp3 from cache folder, add music tags etc<br>
+* Download netease mp3 from cache folder<br>
+* Add music tags "title, album, artist, date, tracknumber, cover" according tag source
+* Organize mp3 files structure
 ## Usage: <br>
 * Modify parameters in the beginning of code file:<br>
 CACHE_FOLDER = r'C:\Users\xxx\AppData\Local\Netease\CloudMusic\Cache\Cache\\'<br>
