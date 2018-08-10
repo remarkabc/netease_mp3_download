@@ -8,7 +8,7 @@ from mutagen.mp3 import MP3
 import re
 
 
-CACHE_FOLDER = r'C:\Users\reMArk\AppData\Local\Netease\CloudMusic\Cache\Cache\\'
+CACHE_FOLDER = r'C:\Users\xxx\AppData\Local\Netease\CloudMusic\Cache\Cache\\'
 OUTPUT_FOLDER = r'E:\Netease\\'
 MAX_RETRY = 5
 INFO_API = r'https://api.imjad.cn/cloudmusic/?type=detail&id='
@@ -118,6 +118,9 @@ def organize_file(myinputfile, mytags, myoutputfolder):
     if not os.path.exists(album_folder):
         os.mkdir(album_folder)
     audio_file = album_folder + '\\' + mytags['song_no'] + '.' + re.sub('[\/:*?"<>|]', '', mytags['song_name']) + '.mp3'
+    if os.path.exists(audio_file):
+        print('--Skip ' + audio_file)
+        return
     print(audio_file)
     shutil.move(myinputfile, audio_file)
 
