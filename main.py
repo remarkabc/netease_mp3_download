@@ -59,8 +59,6 @@ def get_tags(myinputfile):
         except Exception as e:
             print(e)
             retry_num = retry_num + 1
-        else:
-            break
     exit(500)
 
 
