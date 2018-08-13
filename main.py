@@ -35,35 +35,33 @@ def get_tags(myinputfile):
     arr = filename.split('-')
     mp3_id = arr[0]
     info_url = INFO_API + mp3_id
-    try:
-        page = request.Request(info_url)
-        page_html = request.urlopen(page).read().decode('utf-8')
-        retry_num = 1
-        while len(page_html) == 0:
-            if retry_num > MAX_RETRY:
-                exit(500)
-            time.sleep(1)
+    retry_num = 0
+    while retry_num < MAX_RETRY:
+        try:
+            page = request.Request(info_url)
             page_html = request.urlopen(page).read().decode('utf-8')
+            myjsondata = json.loads(page_html)
+            song_name = myjsondata['songs'][0]['name']
+            tag_info['song_name'] = song_name
+            artist_name = myjsondata['songs'][0]['ar'][0]['name']
+            tag_info['artist_name'] = artist_name
+            album_name = myjsondata['songs'][0]['al']['name']
+            tag_info['album_name'] = album_name
+            pic_url = myjsondata['songs'][0]['al']['picUrl']
+            tag_info['album_pic'] = download_pic(pic_url)
+            song_no = myjsondata['songs'][0]['no']
+            tag_info['song_no'] = str(song_no).zfill(2)
+            timeStamp = str(myjsondata['songs'][0]['publishTime'])[:-3]
+            timeArray = time.localtime(abs(int(timeStamp)))
+            album_year = time.strftime("%Y", timeArray)
+            tag_info['album_year'] = album_year
+            return tag_info
+        except Exception as e:
+            print(e)
             retry_num = retry_num + 1
-        #print(page_html)
-    except Exception as e:
-        print(e)
-    myjsondata = json.loads(page_html)
-    song_name = myjsondata['songs'][0]['name']
-    tag_info['song_name'] = song_name
-    artist_name = myjsondata['songs'][0]['ar'][0]['name']
-    tag_info['artist_name'] = artist_name
-    album_name = myjsondata['songs'][0]['al']['name']
-    tag_info['album_name'] = album_name
-    pic_url = myjsondata['songs'][0]['al']['picUrl']
-    tag_info['album_pic'] = download_pic(pic_url)
-    song_no = myjsondata['songs'][0]['no']
-    tag_info['song_no'] = str(song_no).zfill(2)
-    timeStamp = str(myjsondata['songs'][0]['publishTime'])[:-3]
-    timeArray = time.localtime(abs(int(timeStamp)))
-    album_year = time.strftime("%Y", timeArray)
-    tag_info['album_year'] = album_year
-    return tag_info
+        else:
+            break
+    exit(500)
 
 
 def download_pic(myurl):
